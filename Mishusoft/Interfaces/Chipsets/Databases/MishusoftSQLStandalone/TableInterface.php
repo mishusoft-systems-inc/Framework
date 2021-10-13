@@ -1,6 +1,6 @@
 <?php
 
-namespace Mishusoft\Framework\Interfaces\Chipsets\Databases\MishusoftSQLStandalone;
+namespace Mishusoft\Interfaces\Chipsets\Databases\MishusoftSQLStandalone;
 
 interface TableInterface
 {
