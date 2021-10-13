@@ -58,9 +58,6 @@ class Runtime
     }
 
 
-    /**
-     * @return string
-     */
     private static function getLocaleOnly(): string
     {
         /*
@@ -85,7 +82,7 @@ class Runtime
              * verified extracted locale language check from count supported locale language of system,
              * verify if it is more than 0
              */
-            if (!empty($locale) && count(array_change_key_case(Localization::SUPPORT)) > 0) {
+            if (!empty($locale) && array_change_key_case(Localization::SUPPORT) !== []) {
                 /*
                  * if supported locale languages list is not set or locale not in these,
                  * then locale set to module, and it makes default
@@ -108,8 +105,6 @@ class Runtime
     }
 
     /**
-     * @param string $link
-     * @return string
      * @throws ErrorException
      * @throws RuntimeException
      * @throws RuntimeException\NotFoundException
@@ -119,21 +114,16 @@ class Runtime
         $link = trim($link);
         $webRootUrl = self::hostUrl();
 
-        if (str_ends_with($webRootUrl, '/') === false) {
+        if (substr_compare($webRootUrl, '/', -strlen('/')) !== 0) {
             $webRootUrl .= '/';
         }
 
-        if (strtolower($link) === "default_home") {
-            $Url = self::getLocaleOnly();
-        } else {
-            $Url = self::getLocaleOnly() . $link;
-        }
+        $Url = strtolower($link) === "default_home" ? self::getLocaleOnly() : self::getLocaleOnly() . $link;
 
         return ($webRootUrl . $Url);
     }
 
     /**
-     * @param string $url
      * @throws ErrorException
      * @throws RuntimeException
      * @throws RuntimeException\NotFoundException
@@ -144,10 +134,6 @@ class Runtime
         exit(0);
     }
 
-    /**
-     * @param string $url
-     * @return string
-     */
     public static function getNextURL(string $url): string
     {
         if (Storage::applicationWebDirectivePath() !== '/') {
@@ -170,9 +156,6 @@ class Runtime
 
 
     /**
-     * @param array $array
-     * @param string $message
-     * @return array
      * @throws RuntimeException
      */
     public static function update(array $array, string $message): array
@@ -183,13 +166,9 @@ class Runtime
         ]);
     }
 
-    /**
-     * @param array $array
-     * @return array
-     */
     public static function cleanArray(array $array): array
     {
-        if (count($array) > 0) {
+        if ($array !== []) {
             $excludes = ["url"];
 
             foreach ($excludes as $exclude) {
@@ -202,20 +181,16 @@ class Runtime
     }
 
     /**
-     * @param string $message
-     * @return string
      * @throws RuntimeException
      */
     public static function actualUrl(string $message = "You need must log in to continue."): string
     {
         $url = "";
-        if (count(Arr::cleanArray(self::update($_GET, $message), ["url"])) > 0) {
-            foreach (Arr::cleanArray(self::update($_GET, $message), ["url"]) as $key => $value) {
-                if (array_key_last(Arr::cleanArray(self::update($_GET, $message), ["url"])) === $key) {
-                    $url .= sprintf("%s=%s", $key, $value);
-                } else {
-                    $url .= sprintf("%s=%s&", $key, $value);
-                }
+        foreach (Arr::cleanArray(self::update($_GET, $message), ["url"]) as $key => $value) {
+            if (array_key_last(Arr::cleanArray(self::update($_GET, $message), ["url"])) === $key) {
+                $url .= sprintf("%s=%s", $key, $value);
+            } else {
+                $url .= sprintf("%s=%s&", $key, $value);
             }
         }
         return $url;
@@ -229,13 +204,14 @@ class Runtime
      * @throws InvalidArgumentException
      * @throws HttpResponseException
      * @throws PermissionRequiredException
+     * @param string|mixed[] ...$details
      */
-    public static function abort(int $status, string|array ...$details): void
+    public static function abort(int $status, ...$details): void
     {
         $message = [];
         $messageDetails = [];
         //string $file, string $location, string $description
-        if (count($details) > 0) {
+        if ($details !== []) {
             if (count($details) >! 4) {
                 foreach ($details as $detail) {
                     $dArray = explode('@', $detail);
