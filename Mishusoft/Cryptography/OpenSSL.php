@@ -60,25 +60,19 @@ class OpenSSL
     {
         // self::$encryption_key_256bit = base64_encode(openssl_random_pseudo_bytes(32));
     }//end __construct()
-
-
     /**
      * Get simple secret IV.
-     *
-     * @return string
      */
     protected static function getSecretIv(): string
     {
         return self::$secretIv;
     }//end getSecretIv()
-
-
     /**
      * Get decoded encrypt key.
      *
-     * @return boolean|string
+     * @return bool|string
      */
-    protected static function getDecodedEncryptKey(): bool|string
+    protected static function getDecodedEncryptKey()
     {
         // Remove the base64 encoding from our key.
         return base64_decode(self::$encryptionKey256bit);
@@ -95,7 +89,7 @@ class OpenSSL
     {
         // Generate an initialization vector.
         $cipherIvLength = openssl_cipher_iv_length(self::$cipherAlgo1);
-        if (is_int($cipherIvLength) === false) {
+        if (!is_int($cipherIvLength)) {
             throw new RuntimeException(
                 'Non-cryptographically strong algorithm used for iv generation.'
             );
