@@ -6,9 +6,6 @@ use Mishusoft\Services\SecureDataTransferService;
 
 class ApplicationProgrammingInterface extends SecureDataTransferService
 {
-    /**
-     * @param array $request
-     */
     public function api(array $request):void
     {
         //api/db/{query, add, delete, update}
@@ -16,10 +13,7 @@ class ApplicationProgrammingInterface extends SecureDataTransferService
         //api/user/{query, add, delete, update}
         parent::api($request);
     }//end api()
-
-
     /**
-     * @param array $request
      * @throws \GeoIp2\Exception\AddressNotFoundException
      * @throws \JsonException
      * @throws \MaxMind\Db\Reader\InvalidDatabaseException
