@@ -13,7 +13,6 @@ class Classic
 {
 
     /**
-     * @param Http\Request\Classic $request
      * @throws Exceptions\ErrorException
      * @throws Exceptions\JsonException
      * @throws Exceptions\LogicException\InvalidArgumentException
