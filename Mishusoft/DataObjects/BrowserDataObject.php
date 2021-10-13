@@ -299,19 +299,9 @@ class BrowserDataObject
         'dev.mishusoft.com',
         'www.mishusoft.com',
         'localhost',
-    ];
-
-
-    public function __construct()
-    {
-
-    }//end __construct()
-
-
+    ];//end __construct()
     /**
      * List of devices
-     *
-     * @return array
      */
     protected function getDevicesList(): array
     {
@@ -1677,12 +1667,8 @@ class BrowserDataObject
         ];
 
     }//end getDevicesList()
-
-
     /**
      * List of devices category
-     *
-     * @return array
      */
     protected function getDevicesCategoryList(): array
     {
@@ -1695,12 +1681,8 @@ class BrowserDataObject
         ];
 
     }//end getDevicesCategoryList()
-
-
     /**
      * List of devices architecture
-     *
-     * @return array
      */
     protected function getDevicesArchitectureList(): array
     {
@@ -1777,12 +1759,8 @@ class BrowserDataObject
         ];
 
     }//end getDevicesArchitectureList()
-
-
     /**
      * List of web browsers window manager
-     *
-     * @return array
      */
     protected function getPlatformWmList(): array
     {
@@ -1807,12 +1785,8 @@ class BrowserDataObject
         ];
 
     }//end getPlatformWmList()
-
-
     /**
      * List of web browsers
-     *
-     * @return array
      */
     protected function getWebBrowsersList(): array
     {
@@ -3537,12 +3511,8 @@ class BrowserDataObject
         ];
 
     }//end getWebBrowsersList()
-
-
     /**
      * List of web browsers.
-     *
-     * @return array
      */
     protected function getWebBrowsers(): array
     {
@@ -4647,12 +4617,8 @@ class BrowserDataObject
         ];
 
     }//end getWebBrowsers()
-
-
     /**
      * List of web browsers app code
-     *
-     * @return array
      */
     protected function getWebBrowserAppCodeList(): array
     {
@@ -4660,12 +4626,8 @@ class BrowserDataObject
         return ['mozilla' => 'Mozilla'];
 
     }//end getWebBrowserAppCodeList()
-
-
     /**
      * List of web browsers layout
-     *
-     * @return array
      */
     protected function getWebBrowsersLayoutList(): array
     {
