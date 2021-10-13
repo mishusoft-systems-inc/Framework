@@ -117,11 +117,12 @@ class EmbeddedView
         );
 
         Ui::elementList(Ui::getDocumentHeadElement(), [
-            'link' => Storage::assignableWebFavicons(),
+            'link' => Storage::assignableWebFavicons('framework'),
             'style' => [
                 ['text' => Storage\FileSystem::read(Storage::fViewsFullPath('css/embedded.css')),],
             ],
         ]);
+
 
         //<link rel="icon" type="image/vnd.microsoft.icon" sizes="16x16" href="{logoFolder}favicon.ico">
         //Ui::element(Ui::getDocumentHeadElement(), 'style', ['text'=>$cssContent]);
@@ -362,7 +363,7 @@ class EmbeddedView
                         );
                     }
                     if ($type === 'warning') {
-                        $additional = $additionalCommon . 'background: #f9d8b1;color: rgba(157, 87, 3, 1); border:2px solid rgba(157, 87, 3, 1);';
+                        $additional = $additionalCommon . 'background: rgba(157, 87, 3, .15);color: rgba(157, 87, 3, 1); border:2px solid rgba(157, 87, 3, 1);';
                         $contents['div'][] = self::setAttributes(
                             ['class' => $commonMessage, 'style' => $additional, 'text' => $message,]
                         );
@@ -555,6 +556,7 @@ class EmbeddedView
     private static function makeImageElement(string $classname, string $alternate, string $src): array
     {
         return [
+            'rel' => 'preload',
             'class' => $classname,
             'alt' => ucfirst($alternate),
             'title' => ucfirst($alternate),
