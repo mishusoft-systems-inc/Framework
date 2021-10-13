@@ -4,7 +4,7 @@
 namespace Mishusoft\Framework\Interfaces\Chipsets\Databases;
 
 
-use Mishusoft\Framework\Interfaces\Chipsets\Databases\MishusoftSQLStandalone\TableInterface;
+use Mishusoft\Interfaces\Chipsets\Databases\MishusoftSQLStandalone\TableInterface;
 
 interface MishusoftSQLStandaloneInterface
 {
