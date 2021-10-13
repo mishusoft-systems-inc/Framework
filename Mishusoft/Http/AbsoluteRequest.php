@@ -7,7 +7,10 @@ class AbsoluteRequest extends Request
 {
 
 
-    public function get(string $url, \Closure $resource): static
+    /**
+     * @return $this
+     */
+    public function get(string $url, \Closure $resource)
     {
         if ($this->uri === $url) {
             $resource();
