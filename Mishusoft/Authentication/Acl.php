@@ -83,11 +83,9 @@ class Acl
         $ids = $this->getIdFromPermissionsRole();
         $permissions = [];
 
-        if (count($ids) > 0) {
-            foreach ($ids as $id) {
-                if (count($this->getAllPermissionsOfUser((int)$this->id, (int)$id)) > 0) {
-                    $permissions[] = $this->getAllPermissionsOfUser((int)$this->id, (int)$id);
-                }
+        foreach ($ids as $id) {
+            if ($this->getAllPermissionsOfUser($this->id, (int)$id) !== []) {
+                $permissions[] = $this->getAllPermissionsOfUser($this->id, (int)$id);
             }
         }
 
@@ -153,12 +151,6 @@ class Acl
 
 
 
-    /*database queries*/
-
-    /**
-     * @param int $idNumber
-     * @return string|null
-     */
     private function getRole(int $idNumber): ?string
     {
         return (int)ArrayCollection::value(self::$conOfDatabase->read(DB\Table::USERS_LIST)->get(
@@ -166,10 +158,6 @@ class Acl
         ), "role");
     }
 
-    /**
-     * @param int $roleNumber
-     * @return array
-     */
     private function getPermissionsOfRole(int $roleNumber): array
     {
         return self::$conOfDatabase->read(DB\Table::PERMISSIONS_OF_ROLES_LIST)->get(
@@ -177,10 +165,6 @@ class Acl
         );
     }
 
-    /**
-     * @param int $roleNumber
-     * @return array
-     */
     private function getPermissionFromPermissionsOfRole(int $roleNumber): array
     {
         return self::$conOfDatabase->read(DB\Table::PERMISSIONS_OF_ROLES_LIST)->get(
@@ -188,11 +172,6 @@ class Acl
         );
     }
 
-    /**
-     * @param int $roleNumber
-     * @param int $permissionId
-     * @return array
-     */
     private function getAllPermissionsOfUser(int $roleNumber, int $permissionId): array
     {
         return self::$conOfDatabase->read(DB\Table::PERMISSIONS_OF_ROLES_LIST)->get(
@@ -200,10 +179,6 @@ class Acl
         );
     }
 
-    /**
-     * @param int $idNumberOfPermission
-     * @return string|null
-     */
     private function getKeyOfPermission(int $idNumberOfPermission): ?string
     {
         return ArrayCollection::value(self::$conOfDatabase->read(DB\Table::PERMISSIONS_LIST)->get(
@@ -211,19 +186,10 @@ class Acl
         ), "key");
     }
 
-    /**
-     * @param int $idNumberOfPermission
-     * @return string|null
-     */
     private function getNameOfPermission(int $idNumberOfPermission): ?string
     {
         return ArrayCollection::value(self::$conOfDatabase->read(DB\Table::PERMISSIONS_LIST)->get(
             ["data" => ["get" => ["permission"], "where" => ["id" => "{$idNumberOfPermission}"]]]
         ), "key");
-    }
-
-
-    public function __destruct()
-    {
     }
 }
