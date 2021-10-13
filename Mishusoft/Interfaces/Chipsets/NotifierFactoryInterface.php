@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Mishusoft\Framework\Interfaces\Chipsets;
+namespace Mishusoft\Interfaces\Chipsets;
 
 
 interface NotifierFactoryInterface
