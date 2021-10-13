@@ -50,7 +50,7 @@ class Session
     public static function validity(): void
     {
         if (self::get('auth') === false) {
-            if (count(ArrayCollection::cleanArray($_GET, ["url"])) > 0) {
+            if (ArrayCollection::cleanArray($_GET, ["url"]) !== []) {
                 Runtime::redirect(
                     'account/login?'
                     . Runtime::actualUrl("Your session time out. Please log in to continue.")
@@ -98,9 +98,9 @@ class Session
     }
 
     /**
-     * @param array|string $value
+     * @param mixed[]|string $value
      */
-    public static function destroy(array|string $value = []): void
+    public static function destroy($value = []): void
     {
         if ($value) {
             if (is_array($value) && count($value)>0) {
@@ -118,7 +118,6 @@ class Session
     }
 
     /**
-     * @param string $value
      * @param $source
      */
     public static function set(string $value, $source): void
@@ -129,7 +128,6 @@ class Session
     }
 
     /**
-     * @param string $level
      * @throws PermissionRequiredException
      */
     public static function access(string $level): void
@@ -144,8 +142,6 @@ class Session
     }
 
     /**
-     * @param string $level
-     * @return int
      * @throws PermissionRequiredException
      */
     public static function getLevel(string $level): int
@@ -167,8 +163,6 @@ class Session
     }
 
     /**
-     * @param string $level
-     * @return bool
      * @throws ErrorException
      * @throws JsonException
      * @throws \JsonException
@@ -185,12 +179,10 @@ class Session
 
         self::sessionTime();
 
-        return !(self::getLevel($level) > self::getLevel(self::get('level')));
+        return self::getLevel($level) <= self::getLevel(self::get('level'));
     }
 
     /**
-     * @param array $level
-     * @param bool $noAdmin
      * @throws ErrorException
      * @throws JsonException
      * @throws \JsonException
@@ -207,7 +199,7 @@ class Session
 
         self::sessionTime();
 
-        if (($noAdmin === false)
+        if ((!$noAdmin)
             && self::get('level') === 'admin') {
             return;
         }
@@ -221,9 +213,6 @@ class Session
     }
 
     /**
-     * @param array $level
-     * @param bool $noAdmin
-     * @return bool
      * @throws ErrorException
      * @throws JsonException
      * @throws \JsonException
@@ -240,20 +229,11 @@ class Session
 
         self::sessionTime();
 
-        if (($noAdmin === false)
+        if ((!$noAdmin)
             && self::get('level') === 'admin') {
             return true;
         }
-
-        if (count($level)
-            && in_array(self::get('level'), $level, true)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function __destruct()
-    {
+        return count($level)
+            && in_array(self::get('level'), $level, true);
     }
 }
