@@ -11,7 +11,6 @@ class Cli
 {
 
     /**
-     * @param Request $request
      * @throws Exceptions\HttpException\HttpRequestException
      * @throws Exceptions\RuntimeException\NotFoundException
      */
@@ -29,11 +28,7 @@ class Cli
                 $controller = Base::getClassNamespace($rootController);
                 $controller = new $controller;
 
-                if (is_callable([$controller, $method])) {
-                    $method = $request->getMethod();
-                } else {
-                    $method = 'run';
-                }
+                $method = is_callable([$controller, $method]) ? $request->getMethod() : 'run';
 
                 if (isset($args)) {
                     call_user_func_array([$controller, $method], $args);
