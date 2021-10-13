@@ -12,7 +12,6 @@ trait DiskObserver
      *
      * @param string $rootPath System root path.
      *
-     * @return void
      * @throws Exceptions\RuntimeException
      * @throws Exceptions\ErrorException
      * @throws Exceptions\PermissionRequiredException
@@ -22,7 +21,7 @@ trait DiskObserver
         /*
          * Check root directory is directory or not.
          * */
-        if (is_dir($rootPath) === false) {
+        if (!is_dir($rootPath)) {
             throw new Exceptions\RuntimeException\NotFoundException($rootPath.' not found.');
         }
 
@@ -36,7 +35,7 @@ trait DiskObserver
         /*
          * Check provided root directory in app installed path.
          * */
-        if (in_array(self::getDirectoryName($rootPath), SYSTEM_EXCLUDE_DIRS, true) === true) {
+        if (in_array(self::getDirectoryName($rootPath), SYSTEM_EXCLUDE_DIRS, true)) {
             return;
         }
 
@@ -45,35 +44,32 @@ trait DiskObserver
          * */
         $files = glob($rootPath.'*', GLOB_MARK);
         foreach ($files as $file) {
-            if (is_dir($file) === true) {
+            if (is_dir($file)) {
                 $this->checkFileSystem($file);
             } else {
                 $this->updateFileSystemDisk($file);
             }
         }
     }//end checkFileSystem()
-
-
     /**
-     * @param string $file
      * @throws Exceptions\RuntimeException
      * @throws Exceptions\PermissionRequiredException
      */
     protected function updateFileSystemDisk(string $file): void
     {
-        if (file_exists($this->listerFile()) === true) {
-            if (is_readable($this->listerFile()) === true) {
+        if (file_exists($this->listerFile())) {
+            if (is_readable($this->listerFile())) {
                 $this->updateDirectoryIndex($file);
             } else {
                 throw new Exceptions\PermissionRequiredException(sprintf('Unable to read %s', $this->listerFile()));
             }
-        } elseif (is_writable(dirname($this->listerFile(), 2)) === true) {
-            if (is_dir(dirname($this->listerFile())) === false) {
+        } elseif (is_writable(dirname($this->listerFile(), 2))) {
+            if (!is_dir(dirname($this->listerFile()))) {
                 FileSystem::makeDirectory(dirname($this->listerFile()));
             }
 
-            if (is_writable(dirname($this->listerFile())) === true) {
-                if (file_exists($this->listerFile()) === false) {
+            if (is_writable(dirname($this->listerFile()))) {
+                if (!file_exists($this->listerFile())) {
                     fclose(fopen($this->listerFile(), 'wb+'));
                     FileSystem::exec($this->listerFile());
                 }
@@ -86,16 +82,13 @@ trait DiskObserver
             );
         }//end if
     }//end updateFileSystemDisk()
-
-
     /**
-     * @param string $file
      * @throws Exceptions\PermissionRequiredException
      */
     protected function updateDirectoryIndex(string $file): void
     {
-        if (is_writable($this->listerFile()) === true) {
-            if (is_file($file) === true && file_exists($file) === true) {
+        if (is_writable($this->listerFile())) {
+            if (is_file($file) && file_exists($file)) {
                 $data  = file_get_contents($this->listerFile());
                 $data .= substr(sprintf('%o', fileperms($this->listerFile())), -4)."\t";
                 $data .= filetype(realpath($this->listerFile()))."\t$file\n";
