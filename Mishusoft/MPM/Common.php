@@ -26,37 +26,34 @@ class Common extends MPM
      */
     public static function autoUpdateQualifiedAPIRoutes(string $rootDirectory): void
     {
-        /*
-         * Auto update splitters configurations
-         */
-        if (file_exists(self::qualifiedAPIRoutesFile()) === false) {
-            $configs = [];
-            Log::info(sprintf('Count all exists files from %s directory.', $rootDirectory));
-            if (count(FileSystem::list($rootDirectory, 'file')) > 0) {
-                foreach (FileSystem::list($rootDirectory, 'file') as $filename) {
-                    if (pathinfo($filename, PATHINFO_EXTENSION) === 'json') {
-                        $configs[] = (array) Implement::jsonDecode(
-                            FileSystem::read($rootDirectory.$filename),
-                            IMPLEMENT_JSON_IN_ARR
-                        );
-                    }
+        $configs = [];
+        if (count(FileSystem::list($rootDirectory, 'file')) > 0) {
+            foreach (FileSystem::list($rootDirectory, 'file') as $filename) {
+                $filenameOriginal = $rootDirectory.$filename;
+                if (file_exists($filenameOriginal) && pathinfo($filenameOriginal, PATHINFO_EXTENSION) === 'json') {
+                    $configs[filemtime($filenameOriginal)] = (array) Implement::jsonDecode(
+                        FileSystem::read($filenameOriginal),
+                        IMPLEMENT_JSON_IN_ARR
+                    );
                 }
+            }
 
-                array_multisort($configs, SORT_ASC);
-                ksort($configs, SORT_ASC);
+            array_multisort($configs, SORT_ASC);
+            ksort($configs, SORT_ASC);
 
-
-                Log::info(
-                    sprintf(
-                        'Remove old qualified api routes file from %s directory.',
-                        Storage::dataDriveStoragesPath()
-                    )
-                );
-                FileSystem::remove(self::qualifiedAPIRoutesFile());
-                Log::info(
-                    sprintf('Write new qualified api routes file in %s directory.', Storage::dataDriveStoragesPath())
-                );
-                FileSystem\Yaml::emitFile(self::qualifiedAPIRoutesFile(), $configs);
+            if (file_exists(self::qualifiedAPIRoutesFile()) === true) {
+                array_map(static function ($lastModifiedAt) use ($configs):void {
+                    if (filemtime(self::qualifiedAPIRoutesFile()) < $lastModifiedAt) {
+                        FileSystem::remove(self::qualifiedAPIRoutesFile());
+                        $configs = array_merge_recursive(
+                            FileSystem\Yaml::parseFile(self::qualifiedAPIRoutesFile()),
+                            array_values($configs)
+                        );
+                        FileSystem\Yaml::emitFile(self::qualifiedAPIRoutesFile(), array_values($configs));
+                    }
+                }, array_keys($configs));
+            } else {
+                FileSystem\Yaml::emitFile(self::qualifiedAPIRoutesFile(), array_values($configs));
             }
         }
     }
