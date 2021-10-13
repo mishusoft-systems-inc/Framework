@@ -34,7 +34,7 @@ class Decryption extends OpenSSL
         if ($type === 'advanced') {
             // Generate an initialization vector.
             $cipherLength = openssl_cipher_iv_length(self::$cipherAlgo1);
-            if (is_int($cipherLength) === true) {
+            if (is_int($cipherLength)) {
                 $random = openssl_random_pseudo_bytes($cipherLength, $isSourceStrong);
                 if (false === $isSourceStrong || false === $random) {
                     throw new RuntimeException('IV generation failed');
