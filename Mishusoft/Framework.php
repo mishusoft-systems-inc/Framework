@@ -42,16 +42,14 @@ class Framework extends Base
     /**
      * Init function for Framework
      *
-     * @param Registry $registry
-     * @param Closure $closure
-     * @return Framework
      * @throws Exceptions\ErrorException
      * @throws Exceptions\LogicException\InvalidArgumentException
      * @throws Exceptions\PermissionRequiredException
      * @throws Exceptions\RuntimeException
      * @throws \Exception
+     * @return $this
      */
-    public static function init(Registry $registry, Closure $closure): static
+    public static function init(Registry $registry, Closure $closure)
     {
         $instance = new static();
 
@@ -73,36 +71,19 @@ class Framework extends Base
 
         //static::execute();
         return $instance;
-    }//end init()
-
-    /**
-     * @return string
-     */
-    public static function getAbsoluteInstalledURL(): string
+    }public static function getAbsoluteInstalledURL(): string
     {
         return Registry::Browser()::urlOrigin($_SERVER).Storage::applicationWebDirectivePath();
-    }//end getAbsoluteInstalledURL()
-
-
-    /**
-     * @return string
-     */
-    public static function configFile():string
+    }public static function configFile():string
     {
         return self::dFile(self::configDataFile('Framework', 'config'));
     }
 
-    /**
-     * @return string
-     */
     public static function installFile():string
     {
         return self::dFile(self::configDataFile('Framework', 'install'));
     }
 
-    /**
-     * @return string
-     */
     public function listerFile():string
     {
         return self::dFile(self::configDataFile('Framework', 'files/' . APPLICATION_SERVER_NAME), 'ext4');
@@ -131,9 +112,9 @@ class Framework extends Base
     public static function makeInstall(Registry $registry): void
     {
         // Preparing to check framework install file.
-        if (is_readable(static::installFile()) === true) {
+        if (is_readable(static::installFile())) {
             // Framework install file found and start reading.
-            if (defined('INSTALLED_HOST_NAME') === false) {
+            if (!defined('INSTALLED_HOST_NAME')) {
                 define('INSTALLED_HOST_NAME', System\Memory::data('framework')->host->name);
             }
         } else {
@@ -142,7 +123,7 @@ class Framework extends Base
             Storage\FileSystem\Yaml::emitFile(static::installFile(), [
                 'name'        => 'Framework Installer',
                 'version'     => static::VERSION,
-                'debug'       => !(MPM\Classic::getProperty('release') === 'stable'),
+                'debug'       => MPM\Classic::getProperty('release') !== 'stable',
                 'date'        => System\Time::todayDateOnly(),
                 'host'        => [
                     'url'  => $registry::Browser()::urlOrigin($_SERVER).Storage::applicationWebDirectivePath(),
@@ -170,8 +151,8 @@ class Framework extends Base
      */
     public function execute(): void
     {
-        if (file_exists(Storage::applicationDirectivePath()) === false
-            || file_exists(MPM\Classic::configFile()) === false) {
+        if (!file_exists(Storage::applicationDirectivePath())
+            || !file_exists(MPM\Classic::configFile())) {
             EmbeddedView::welcomeToFramework(static::FULL_NAME, [
                 'caption' => static::FULL_NAME,
                 'description' => static::description(),
